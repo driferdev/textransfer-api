@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  nginx:
+    container_name: clipbord_nginx
+    image: nginx:stable-alpine
+    ports:
+      - "4000:80"
+    volumes:
+      - .:/var/www/html/app
+      - ./docker/nginx:/etc/nginx/conf.d/
+    links:
+      - php
+  php:
+    container_name: clipbord_php
+    build: docker/php
+    volumes:
+      - .:/var/www/html/app
+  mysql:
+    container_name: clipbord_mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
