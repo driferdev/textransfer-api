@@ -20,4 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::middleware('cors')->get('room/create', 'RoomController@create');
-Route::middleware('cors')->get('room/{name}', 'RoomController@open');
+Route::middleware('cors')->get('room/{name}', 'RoomController@getRoom');

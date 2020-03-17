@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Repositories\RoomRepository;
-use mysql_xdevapi\Exception;
 
 class RoomController extends Controller
 {
@@ -13,13 +11,14 @@ class RoomController extends Controller
         return response()->json(['room' => $newRoom->name]);
     }
 
-    public function open(string $name, RoomRepository $roomRepository) {
-        $room = $roomRepository->open($name);
+    public function getRoom(string $name, RoomRepository $roomRepository) {
+        $room = $roomRepository->getRoom($name);
         if($room === null) {
             return response()->json([
                 'error' => 'Room not found.'
             ], 404);
         }
+        $roomRepository->updateLastUsed($room);
         return response()->json([
             'room' => $room->name,
             'text' => $room->text ?? ''

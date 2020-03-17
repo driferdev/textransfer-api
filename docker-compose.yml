@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   nginx:
-    container_name: clipbord_nginx
+    container_name: textransfer_nginx
     image: nginx:stable-alpine
     ports:
       - "4000:80"
@@ -10,13 +10,20 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d/
     links:
       - php
+    networks:
+      default:
+        aliases:
+          - local-api.textransfer.tech
+      textransfer:
+        aliases:
+          - local-api-service.textransfer.tech
   php:
-    container_name: clipbord_php
+    container_name: textransfer_php
     build: docker/php
     volumes:
       - .:/var/www/html/app
   mysql:
-    container_name: clipbord_mysql
+    container_name: textransfer_mysql
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -26,3 +33,17 @@ services:
       - ./mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      default:
+        aliases:
+          - local-database.textransfer.tech
+      textransfer:
+        aliases:
+          - local-database.textransfer.tech
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 11.0.3.0/24
+  textransfer:
+    external: true

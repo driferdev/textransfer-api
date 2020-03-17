@@ -15,7 +15,7 @@ class RoomRepository {
         return $room;
     }
 
-    public function open(string $name): ?Room
+    public function getRoom(string $name): ?Room
     {
         $room = Room::where('active', 1)
             ->where('name', $name)
@@ -23,13 +23,19 @@ class RoomRepository {
         return $room;
     }
 
+    public function updateLastUsed(Room $room): bool
+    {
+        $room->last_used = new \DateTime();
+        return $room->save();
+    }
+
     private function generateRoomName(): string
     {
         $rooms = Room::where('active', 1)->get()->toArray();
         $usedNames = array_column($rooms, 'name');
-        $name = \rand(00001, 99999);
+        $name = \rand(1, 99999);
         while(\in_array($name, $usedNames)) {
-            $name = rand(1, 99999);
+            $name = \rand(1, 99999);
         }
         return $name;
     }
